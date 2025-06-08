@@ -1,75 +1,20 @@
-# Nuxt Minimal Starter
+# MERC-Portal Website
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The Companion app for the Freelancer TTRPG
 
-## Setup
+## Planned Feautres
 
-Make sure to install dependencies:
+- Character creation
+- Compendium
+- Campaign Management
 
-```bash
-# npm
-npm install
+## Tech Stack
 
-# pnpm
-pnpm install
+Merc Portal has been built using the following technologies:
 
-# yarn
-yarn install
+- Nuxt
+- MongoDB
 
-# bun
-bun install
-```
+## License
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+[GPL](https://github.com/ThomasRemmer/MERC-Portal/blob/main/LICENSE)
