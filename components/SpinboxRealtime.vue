@@ -69,8 +69,8 @@ onMounted(async () => {
       "postgres_changes",
       { event: "UPDATE", schema: "public", table },
       (payload) => {
-        // Force a full page reload for all users when any spinbox is updated
-        window.location.reload();
+        // Update only the spinbox values in real time, no full reload
+        fetchSpinboxValues();
       }
     )
     .subscribe();
