@@ -1,18 +1,21 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen">
-    <div class="grid grid-cols-3 gap-8">
+    <div class="flex flex-row gap-8">
       <div
         v-for="(value, idx) in spinboxValues"
         :key="idx"
-        class="flex flex-col items-center"
+        class="flex flex-row items-center w-40"
       >
-        <label :for="`spinbox-${idx}`" class="mb-2"
-          >Spinbox {{ idx + 1 }}</label
+        <label
+          :for="`spinbox-${idx}`"
+          class="mr-3 font-semibold text-lg text-right w-16"
         >
+          {{ ["Breaker", "Max", "Viz"][idx] }}
+        </label>
         <input
           :id="`spinbox-${idx}`"
           type="number"
-          class="spinbox border rounded px-3 py-2 text-center w-24"
+          class="spinbox border rounded px-3 py-2 text-center flex-1"
           :value="value"
           @input="onInput(idx, ($event.target as HTMLInputElement)?.value)"
         />
@@ -23,7 +26,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useRuntimeConfig } from '#app';
+import { useRuntimeConfig } from "#app";
 import { createClient } from "@supabase/supabase-js";
 
 const config = useRuntimeConfig();
@@ -40,10 +43,15 @@ async function fetchSpinboxValues() {
     .select("id, values")
     .order("id", { ascending: true });
   if (error) {
-    console.error('Supabase fetch error:', error.message, error.details, error.hint);
+    console.error(
+      "Supabase fetch error:",
+      error.message,
+      error.details,
+      error.hint
+    );
     return;
   }
-  console.log('Fetched data from Supabase:', data); // Debug log
+  console.log("Fetched data from Supabase:", data); // Debug log
   if (data && data.length > 0) {
     const values = [0, 0, 0];
     data.forEach((row: any) => {
@@ -61,7 +69,8 @@ onMounted(async () => {
       "postgres_changes",
       { event: "UPDATE", schema: "public", table },
       (payload) => {
-        fetchSpinboxValues();
+        // Force a full page reload for all users when any spinbox is updated
+        window.location.reload();
       }
     )
     .subscribe();
@@ -78,14 +87,30 @@ async function onInput(idx: number, val: string) {
     if (!error) {
       spinboxValues.value[idx] = value;
     } else {
-      console.error('Supabase update error:', error.message, error.details, error.hint);
+      console.error(
+        "Supabase update error:",
+        error.message,
+        error.details,
+        error.hint
+      );
     }
   }
 }
 </script>
 
 <style scoped>
+label {
+  display: block;
+  margin-bottom: 0;
+}
 .spinbox {
   font-size: 1.5rem;
+  margin-top: 0;
+}
+.flex-col {
+  justify-content: flex-start;
+}
+.flex-row {
+  align-items: flex-end;
 }
 </style>
