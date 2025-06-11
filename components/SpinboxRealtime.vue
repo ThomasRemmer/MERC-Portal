@@ -23,22 +23,33 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { useRuntimeConfig } from '#app';
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NUXT_PUBLIC_SUPABASE_URL || "";
-const supabaseKey = process.env.NUXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const config = useRuntimeConfig();
+const supabaseUrl = config.public.supabaseUrl;
+const supabaseKey = config.public.supabaseAnonKey;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const spinboxValues = ref([0, 0, 0]);
+const spinboxValues = ref<number[]>([0, 0, 0]);
 const table = "spinboxes";
 
 async function fetchSpinboxValues() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from(table)
-    .select("value")
+    .select("id, values")
     .order("id", { ascending: true });
-  if (data) {
-    spinboxValues.value = data.map((row: any) => row.value);
+  if (error) {
+    console.error('Supabase fetch error:', error.message, error.details, error.hint);
+    return;
+  }
+  console.log('Fetched data from Supabase:', data); // Debug log
+  if (data && data.length > 0) {
+    const values = [0, 0, 0];
+    data.forEach((row: any) => {
+      if (row.id >= 1 && row.id <= 3) values[row.id - 1] = row.values;
+    });
+    spinboxValues.value = values;
   }
 }
 
@@ -58,10 +69,18 @@ onMounted(async () => {
 
 async function onInput(idx: number, val: string) {
   const value = Number(val);
-  await supabase
-    .from(table)
-    .update({ value })
-    .eq("id", idx + 1);
+  // Only update if the value is different
+  if (spinboxValues.value[idx] !== value) {
+    const { error } = await supabase
+      .from(table)
+      .update({ values: value })
+      .eq("id", idx + 1);
+    if (!error) {
+      spinboxValues.value[idx] = value;
+    } else {
+      console.error('Supabase update error:', error.message, error.details, error.hint);
+    }
+  }
 }
 </script>
 
