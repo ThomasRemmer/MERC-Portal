@@ -1,10 +1,6 @@
 <template>
   <div>
     <NuxtRouteAnnouncer />
-    <SpinboxRealtime />
+    <NuxtPage />
   </div>
 </template>
-
-<script setup>
-import SpinboxRealtime from '~/components/SpinboxRealtime.vue';
-</script>
